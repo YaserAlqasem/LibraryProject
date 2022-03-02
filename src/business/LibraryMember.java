@@ -1,4 +1,2 @@
-package business;
-
-public class LibraryMember {
+package business;public class LibraryMember {
 }
