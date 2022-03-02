@@ -11,7 +11,7 @@ public class LibraryMember extends Person{
         this.memberNumber = memberNum;
     }
 
-    public String getMemberId() {
+    public String getMemberNumber() {
         return memberNumber;
     }
 

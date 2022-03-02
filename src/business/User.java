@@ -15,4 +15,16 @@ public class User  implements Serializable {
         this.password = password;
         this.role = role;
     }
+    public String getId() {
+        return id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public Role getRole()
+    {
+        return role;
+    }
 }
