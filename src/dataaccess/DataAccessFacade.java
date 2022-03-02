@@ -9,14 +9,13 @@ import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 
-import business.Book;
-import business.BookCopy;
-import business.LibraryMember;
-import dataaccess.DataAccessFacade.StorageType;
+import business.*;
 
 
 public class DataAccessFacade implements DataAccess {
-	
+
+	TestData testData = new TestData();
+
 	enum StorageType {
 		BOOKS, MEMBERS, USERS;
 	}
@@ -29,11 +28,28 @@ public class DataAccessFacade implements DataAccess {
 	//implement: other save operations
 	public void saveNewMember(LibraryMember member) {
 		HashMap<String, LibraryMember> mems = readMemberMap();
-		String memberId = member.getMemberId();
+		String memberId = member.getMemberNumber();
 		mems.put(memberId, member);
 		saveToStorage(StorageType.MEMBERS, mems);	
 	}
-	
+
+	@Override
+	public User verifyUser(String id, String password) {
+		HashMap<String, User> users = readUserMap();
+
+		User user = users.get(id);
+
+		if(user == null)
+			return null;
+
+		if(user.getPassword().equals(password))
+		{
+			return user;
+		}
+
+		return null;
+	}
+
 	@SuppressWarnings("unchecked")
 	public  HashMap<String,Book> readBooksMap() {
 		//Returns a Map with name/value pairs being
@@ -75,7 +91,7 @@ public class DataAccessFacade implements DataAccess {
  
 	static void loadMemberMap(List<LibraryMember> memberList) {
 		HashMap<String, LibraryMember> members = new HashMap<String, LibraryMember>();
-		memberList.forEach(member -> members.put(member.getMemberId(), member));
+		memberList.forEach(member -> members.put(member.getMemberNumber(), member));
 		saveToStorage(StorageType.MEMBERS, members);
 	}
 	
