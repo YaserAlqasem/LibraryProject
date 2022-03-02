@@ -1,2 +1,4 @@
-package controller;public class SystemController {
+package controller;
+
+public class SystemController {
 }
