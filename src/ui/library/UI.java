@@ -1,48 +1,49 @@
 package ui.library;
 
-import business.Address;
 import business.LibraryMember;
 import business.User;
-import dataaccess.DataAccessFacade;
+import controller.SystemController;
 import util.Util;
 
 import java.util.Scanner;
 
 public class UI {
-
-
     public static void main(String[] args) {
         Scanner in = new Scanner(System.in);
         User user = null;
-        DataAccessFacade a = new DataAccessFacade();
 
-        LibraryMember lm = new LibraryMember("A", "a", "a", "a", new Address("a", "a", "a", "a"));
+        SystemController controller = SystemController.getInstance();
 
-        a.saveNewMember(lm);
         while (true) {
             System.out.println("Please select one of the options");
             if (user == null) {
-                System.out.println("1 - login");
+                Util.printWhole("     1 - login");
             } else {
-                System.out.println("2 - add new library member");
-                System.out.println("3 - add new book");
-                System.out.println("4 - check out book");
-                System.out.println("5 - add book copy");
-                System.out.println("6 - logout");
+                Util.printWhole("     2 - add new library member");
+                Util.printWhole("     3 - add new book");
+                Util.printWhole("     4 - check out book");
+                Util.printWhole("     5 - add book copy");
+                Util.printWhole("     6 - logout");
             }
             int option = in.nextInt();
             switch (option) {
                 case 1 -> {
-                    Util.print("User ID");
+                    Util.printColor("User ID");
                     String userId = in.next();
-                    Util.print("Password");
+                    Util.printColor("Password");
                     String userPassword = in.next();
-                    //TODO Controller Call To get User (LOGIN)
+                    user = controller.login(userId, userPassword);
                 }
                 case 2 -> {
                     System.out.println("Please Enter new Member First Name");
+//                    LibraryMember member = new LibraryMember();
+
+                }
+                case 6 -> {
+                    user = null;
                 }
             }
+            System.out.println();
         }
     }
 }

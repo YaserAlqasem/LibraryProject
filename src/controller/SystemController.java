@@ -1,7 +1,7 @@
 package controller;
 
 import business.Author;
-import business.Role;
+import business.LibraryMember;
 import business.User;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
@@ -28,5 +28,9 @@ public class SystemController {
             return null;
 
         return user;
+    }
+
+    public void addNewMember(LibraryMember member) {
+
     }
 }
