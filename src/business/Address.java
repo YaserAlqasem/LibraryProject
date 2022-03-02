@@ -1,7 +1,12 @@
 package business;
 
-public class Address {
+import java.io.Serial;
+import java.io.Serializable;
 
+public class Address implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 504221651053881975L;
     private String state;
     private String street;
     private String zipCode;

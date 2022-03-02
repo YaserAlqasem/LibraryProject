@@ -1,9 +1,13 @@
 package business;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-public class CheckOutRecordEntry {
+public class CheckOutRecordEntry implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = -8805603995904459285L;
     private LocalDate dateofCheckout;
     private LocalDate dueDate;
     private double fines;

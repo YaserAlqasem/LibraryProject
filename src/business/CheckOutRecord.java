@@ -1,9 +1,13 @@
 package business;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CheckOutRecord {
+public class CheckOutRecord  implements Serializable {
+    @Serial
+    private static final long serialVersionUID = -64028886303660737L;
     private List<CheckOutRecordEntry> checkOutEntries;
 
     public CheckOutRecord() {

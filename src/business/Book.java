@@ -1,9 +1,13 @@
 package business;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Book {
+public class Book  implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 6359507509442080467L;
     private String title;
     private String isbn;
     private int availability;
