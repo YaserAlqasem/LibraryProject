@@ -1,2 +1,26 @@
-package business;public class LibraryMember {
+package business;
+
+public class LibraryMember extends Person{
+
+    private String memberNumber;
+    private CheckOutRecord checkoutRecord = new CheckOutRecord();
+
+    public LibraryMember(String memberNum, String firstName, String lastName, String phoneNumber, Address address)
+    {
+        super(firstName, lastName, phoneNumber, address);
+        this.memberNumber = memberNum;
+    }
+
+    public String getMemberNumber() {
+        return memberNumber;
+    }
+
+    public CheckOutRecord getCheckOutRecord() {
+        return checkoutRecord;
+    }
+
+    public void addCheckOutRecordEntry(CheckOutRecordEntry entry) {
+        checkoutRecord.addCheckOutRecordEntry(entry);
+        entry.setCheckOutRecord(checkoutRecord);
+    }
 }
