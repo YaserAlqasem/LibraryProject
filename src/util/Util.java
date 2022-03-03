@@ -30,4 +30,12 @@ public class Util {
     public static void printError(String text) {
         System.out.println(ANSI_RED_BACKGROUND + text + ANSI_RESET);
     }
+
+    public static void printResponse(ControllerResponse response) {
+        if (response.isSuccessful()) {
+            Util.printSuccess(" " + response.getMessage() + " ");
+        } else {
+            Util.printError(" " + response.getMessage() + " ");
+        }
+    }
 }

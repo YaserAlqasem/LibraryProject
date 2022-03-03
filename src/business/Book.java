@@ -19,6 +19,7 @@ public class Book  implements Serializable {
         this.isbn = isbn;
         this.maxCheckOutLength = maxCheckOutLength;
         this.authors = authors;
+        addCopy(new BookCopy(1));
     }
 
     public void addCopy(BookCopy bookCopy){

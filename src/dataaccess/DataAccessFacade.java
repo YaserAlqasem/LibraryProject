@@ -50,19 +50,31 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public void addMember(LibraryMember member) {
-        saveToStorage(StorageType.MEMBERS, member);
+        HashMap<String, LibraryMember> mems = readMemberMap();
+        String memberId = member.getMemberId();
+        mems.put(memberId, member);
+        saveToStorage(StorageType.MEMBERS, mems);
     }
 
     @Override
     public void addNewBook(Book book) {
-        saveToStorage(StorageType.BOOKS, book);
+        HashMap<String, Book> bookMap = readBooksMap();
+        String bookIsbn = book.getIsbn();
+        bookMap.put(bookIsbn, book);
+
+        saveToStorage(StorageType.BOOKS, bookMap);
     }
 
     @Override
     public void addNewBookCopy(BookCopy bookCopy) {
         Book book = bookCopy.getBook();
-
         book.addCopy(bookCopy);
+
+        HashMap<String, Book> bookMap = readBooksMap();
+        String bookIsbn = book.getIsbn();
+        bookMap.put(bookIsbn, book);
+
+        saveToStorage(StorageType.BOOKS, bookMap);
     }
 
     @Override
@@ -72,7 +84,7 @@ public class DataAccessFacade implements DataAccess {
 
         Book book = books.get(isbn);
 
-        if(book != null)
+        if (book != null)
             return book;
 
         return null;
@@ -85,7 +97,7 @@ public class DataAccessFacade implements DataAccess {
 
         LibraryMember member = members.get(memberId);
 
-        if(member != null)
+        if (member != null)
             return true;
 
         return false;
@@ -101,38 +113,24 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public BookCopy nextAvailableBookCopy(String isbn) {
-
         HashMap<String, Book> books = readBooksMap();
-
         Book book = books.get(isbn);
 
-//        for(BookCopy bookCopy: book.getBookCopies()) {
-//            if(bookCopy.getAvailability()) {
-//                return bookCopy;
-//            }
-//        }
-
         Optional<BookCopy> matchingObject = book.getBookCopies().stream()
-                .filter(x -> x.getAvailability() == true).findFirst();
+                .filter(BookCopy::getAvailability).findFirst();
 
-        BookCopy bookCopy = matchingObject.get();
-
-        if(bookCopy != null)
-        {
-            return bookCopy;
-        }
-
-        return null;
+        return matchingObject.get();
     }
 
     @Override
     public void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry) {
-
         HashMap<String, LibraryMember> members = readMemberMap();
-
         LibraryMember member = members.get(memberId);
-
         member.addCheckOutRecordEntry(entry);
+
+        HashMap<String, LibraryMember> memberMap = new HashMap<>();
+        memberMap.put(memberId, member);
+        saveToStorage(StorageType.MEMBERS, memberMap);
     }
 
     @Override
@@ -142,7 +140,7 @@ public class DataAccessFacade implements DataAccess {
 
         LibraryMember member = members.get(memberId);
 
-        return  member.getCheckOutRecord().getCheckOutRecordEntries();
+        return member.getCheckOutRecord().getCheckOutRecordEntries();
     }
 
     @SuppressWarnings("unchecked")

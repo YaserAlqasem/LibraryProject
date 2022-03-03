@@ -3,7 +3,7 @@ package controller;
 import business.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
-
+import util.ControllerResponse;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -28,35 +28,33 @@ public class SystemController {
         return user;
     }
 
-    public String addNewMember(LibraryMember member) {
+    public ControllerResponse addNewMember(LibraryMember member) {
         dataAccess.addMember(member);
 
-        return "Successfully added";
+        return new ControllerResponse(true, "Successfully added");
     }
 
-    public String addBook(String title, String isbn, List<Author> authors) {
+    public ControllerResponse addBook(String title, String isbn, List<Author> authors) {
         Book book = new Book(title, isbn, 10, authors);
         dataAccess.addNewBook(book);
 
-        return "Book successfully added";
+        return new ControllerResponse(true, "Book added successfully");
     }
 
-    public String addBookCopy(String isbn, int copyNum) {
-
+    public ControllerResponse addBookCopy(String isbn, int copyNum) {
         Book book = dataAccess.searchBook(isbn);
 
         if (book != null) {
             BookCopy bookCopy = new BookCopy(copyNum);
-            book.addCopy(bookCopy);
             dataAccess.addNewBookCopy(bookCopy);
 
-            return "Copy added successfully";
+            return new ControllerResponse(true, "Copy added successfully");
         }
 
-        return null;
+        return new ControllerResponse(false, "Book is not found");
     }
 
-    public String checkOutBook(String memberId, String isbn) {
+    public ControllerResponse checkOutBook(String memberId, String isbn) {
         Book book = dataAccess.searchBook(isbn);
 
         if (dataAccess.searchMember(memberId) && book != null) {
@@ -64,7 +62,7 @@ public class SystemController {
             BookCopy bookCopy = dataAccess.nextAvailableBookCopy(isbn);
 
             if (bookCopy == null) {
-                return "No available copies";
+                return new ControllerResponse(false, "No available copies");
             }
 
             LocalDate date = LocalDate.now();
@@ -76,29 +74,26 @@ public class SystemController {
 
             dataAccess.saveMemberCheckoutRecord(memberId, checkoutRecordEntry);
 
-            return "Checkout successfully";
-
+            return new ControllerResponse(true, "Checkout successfully");
         }
 
         if (!dataAccess.searchMember(memberId)) {
-            return "Member not found";
+            return new ControllerResponse(false, "Member not found");
         }
 
         if (dataAccess.searchBook(isbn) == null) {
-            return "Book not found";
+            return new ControllerResponse(false, "Book not found");
         }
 
-        return "Something went wrong";
+        return new ControllerResponse(false, "Something went wrong");
     }
 
     public List<CheckOutRecordEntry> searchCheckOutRecords(String memberId) {
 
-        if (dataAccess.searchMember(memberId))
-        {
+        if (dataAccess.searchMember(memberId)) {
             List<CheckOutRecordEntry> recordEntries = dataAccess.getCheckOutRecord(memberId);
 
-            if (recordEntries != null)
-            {
+            if (recordEntries != null) {
                 return recordEntries;
             }
         }
