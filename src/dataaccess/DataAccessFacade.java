@@ -1,5 +1,7 @@
 package dataaccess;
 
+import business.*;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -9,8 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
-
-import business.*;
+import java.util.Optional;
 
 public class DataAccessFacade implements DataAccess {
 
@@ -21,7 +22,6 @@ public class DataAccessFacade implements DataAccess {
     }
 
     public static final String OUTPUT_DIR = "/Users/abdullahfoqha/Documents/LibraryProject/src/dataaccess/storage";
-
     public static final String DATE_PATTERN = "MM/dd/yyyy";
 
     //implement: other save operations
@@ -46,6 +46,103 @@ public class DataAccessFacade implements DataAccess {
         }
 
         return null;
+    }
+
+    @Override
+    public void addMember(LibraryMember member) {
+        saveToStorage(StorageType.MEMBERS, member);
+    }
+
+    @Override
+    public void addNewBook(Book book) {
+        saveToStorage(StorageType.BOOKS, book);
+    }
+
+    @Override
+    public void addNewBookCopy(BookCopy bookCopy) {
+        Book book = bookCopy.getBook();
+
+        book.addCopy(bookCopy);
+    }
+
+    @Override
+    public Book searchBook(String isbn) {
+
+        HashMap<String, Book> books = readBooksMap();
+
+        Book book = books.get(isbn);
+
+        if(book != null)
+            return book;
+
+        return null;
+    }
+
+    @Override
+    public boolean searchMember(String memberId) {
+
+        HashMap<String, LibraryMember> members = readMemberMap();
+
+        LibraryMember member = members.get(memberId);
+
+        if(member != null)
+            return true;
+
+        return false;
+    }
+
+    @Override
+    public int getMaximumCheckoutLength(String isbn) {
+
+        HashMap<String, Book> books = readBooksMap();
+
+        return books.get(isbn).getMaxCheckOutLength();
+    }
+
+    @Override
+    public BookCopy nextAvailableBookCopy(String isbn) {
+
+        HashMap<String, Book> books = readBooksMap();
+
+        Book book = books.get(isbn);
+
+//        for(BookCopy bookCopy: book.getBookCopies()) {
+//            if(bookCopy.getAvailability()) {
+//                return bookCopy;
+//            }
+//        }
+
+        Optional<BookCopy> matchingObject = book.getBookCopies().stream()
+                .filter(x -> x.getAvailability() == true).findFirst();
+
+        BookCopy bookCopy = matchingObject.get();
+
+        if(bookCopy != null)
+        {
+            return bookCopy;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry) {
+
+        HashMap<String, LibraryMember> members = readMemberMap();
+
+        LibraryMember member = members.get(memberId);
+
+        member.addCheckOutRecordEntry(entry);
+    }
+
+    @Override
+    public List<CheckOutRecordEntry> getCheckOutRecord(String memberId) {
+
+        HashMap<String, LibraryMember> members = readMemberMap();
+
+        LibraryMember member = members.get(memberId);
+
+        return  member.getCheckOutRecord().getCheckOutRecordEntries();
     }
 
     @SuppressWarnings("unchecked")

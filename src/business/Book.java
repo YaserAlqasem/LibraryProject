@@ -10,20 +10,23 @@ public class Book  implements Serializable {
     private static final long serialVersionUID = 6359507509442080467L;
     private String title;
     private String isbn;
-    private int availability;
+    private int maxCheckOutLength;
     private List<Author> authors;
-    private List<BookCopy>  bookCopies = new ArrayList<>();
+    private List<BookCopy>  bookCopies;
 
-    public Book(String title, String isbn, int availability, List<Author> authors) {
+    public Book(String title, String isbn, int maxCheckOutLength, List<Author> authors) {
         this.title = title;
         this.isbn = isbn;
-        this.availability = availability;
+        this.maxCheckOutLength = maxCheckOutLength;
         this.authors = authors;
-        bookCopies.add(new BookCopy(++availability, this));
     }
 
-    public void addCopy(){
-        bookCopies.add(new BookCopy(++availability, this));
+    public void addCopy(BookCopy bookCopy){
+        if (bookCopies == null)
+            bookCopies = new ArrayList<>();
+
+        this.bookCopies.add(bookCopy);
+        bookCopy.setBook(this);
     }
 
     public String getTitle() {
@@ -42,19 +45,19 @@ public class Book  implements Serializable {
         this.isbn = isbn;
     }
 
-    public int getAvailability() {
-        return availability;
-    }
-
-    public void setAvailability(int availability) {
-        this.availability = availability;
-    }
-
     public List<Author> getAuthors() {
         return authors;
     }
 
+    public int getMaxCheckOutLength() {
+        return maxCheckOutLength;
+    }
+
     public void setAuthors(List<Author> authors) {
         this.authors = authors;
+    }
+
+    public List<BookCopy> getBookCopies() {
+        return bookCopies;
     }
 }

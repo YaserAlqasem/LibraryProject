@@ -70,7 +70,7 @@ public class UI {
                     String title = in.next();
                     Util.printColor("Book's Isbn");
                     String isbn = in.next();
-                    Util.printColor(" Specify Number of Authors ");
+                    Util.printColor("Specify Number of Authors");
                     int authorsNumber = in.nextInt();
                     ArrayList<Author> authors = new ArrayList<>();
                     for (int i = 1; i <= authorsNumber; i++) {
