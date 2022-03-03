@@ -1,8 +1,6 @@
 package controller;
 
-import business.Author;
-import business.LibraryMember;
-import business.User;
+import business.*;
 import dataaccess.DataAccess;
 import dataaccess.DataAccessFacade;
 
@@ -31,6 +29,31 @@ public class SystemController {
     }
 
     public void addNewMember(LibraryMember member) {
+//        dataAccess.addMember(member);
+    }
 
+    public Book addBook(String title, String isbn, List<Author> authors) {
+        Book book = new Book(title, isbn, 10, authors);
+//        dataAccess.saveNewBook(book);
+
+        return book;
+    }
+
+    public BookCopy addBookCopy(String isbn, int copyNum) {
+
+//        Book book = dataAccess.searchBook(isbn);
+//
+//        if (book != null)
+//        {
+//            book.addCopy();
+//        }
+//
+        return null;
+    }
+
+    public void checkOutBook(String memberId, String isbn) {
+    }
+
+    public void searchCheckOutRecords(String memberId) {
     }
 }
