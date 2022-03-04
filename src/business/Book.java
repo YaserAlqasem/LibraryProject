@@ -20,6 +20,7 @@ public class Book  implements Serializable {
         this.isbn = isbn;
         this.maxCheckOutLength = maxCheckOutLength;
         this.authors = authors;
+        addCopy();
     }
 
     public void addCopy() {

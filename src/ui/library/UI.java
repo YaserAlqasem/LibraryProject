@@ -176,11 +176,6 @@ public class UI {
         System.out.println();
         Util.printColor("Book's Isbn");
         String isbn = in.next();
-        String copyNumber = "";
-
-//        Util.printColor("Copy Number");
-//        String textEntered = in.next();
-//        copyNumber = textEntered;
 
         Util.printResponse(controller.addBookCopy(isbn));
     }

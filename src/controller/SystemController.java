@@ -30,6 +30,7 @@ public class SystemController {
     }
 
     public ControllerResponse addNewMember(LibraryMember member) {
+
         dataAccess.addMember(member);
 
         return new ControllerResponse(true, "Successfully added");
@@ -48,10 +49,7 @@ public class SystemController {
         Book book = dataAccess.searchBook(isbn);
 
         if (book != null) {
-//            BookCopy bookCopy = new BookCopy("");
-//            bookCopy.setBook(book);
             dataAccess.addNewBookCopy(book);
-
             return new ControllerResponse(true, "Copy added successfully");
         }
 

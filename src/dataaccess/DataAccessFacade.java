@@ -67,7 +67,6 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public void addNewBookCopy(Book book) {
-        //Book book = bookCopy.getBook();
         book.addCopy();
 
         HashMap<String, Book> bookMap = readBooksMap();
@@ -79,7 +78,6 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public Book searchBook(String isbn) {
-
         HashMap<String, Book> books = readBooksMap();
 
         Book book = books.get(isbn);
@@ -92,7 +90,6 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public boolean searchMember(String memberId) {
-
         HashMap<String, LibraryMember> members = readMemberMap();
 
         LibraryMember member = members.get(memberId);
