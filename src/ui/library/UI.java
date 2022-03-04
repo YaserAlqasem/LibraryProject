@@ -131,7 +131,10 @@ public class UI {
             String textEntered = in.next();
             try {
                 authorsNumber = Integer.parseInt(textEntered);
-                isNotDig = false;
+                if (authorsNumber > 0)
+                    isNotDig = false;
+                else
+                    Util.printError(" Please Enter a Valid Number ");
             } catch (Exception e) {
                 Util.printError(" Please Enter a Valid Number ");
             }
@@ -175,11 +178,14 @@ public class UI {
             String textEntered = in.next();
             try {
                 copiesNumber = Integer.parseInt(textEntered);
-                isNotDig = false;
+                if (copiesNumber > 0)
+                    isNotDig = false;
+                else
+                    Util.printError(" Please Enter a Valid Number ");
             } catch (Exception e) {
                 Util.printError(" Please Enter a Valid Number ");
             }
-            if (!isNotDig)
+            if (isNotDig)
                 System.out.println();
         }
         Util.printResponse(controller.addBookCopy(isbn, copiesNumber));

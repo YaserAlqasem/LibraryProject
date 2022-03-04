@@ -140,7 +140,10 @@ public class DataAccessFacade implements DataAccess {
 
         LibraryMember member = members.get(memberId);
 
-        return member.getCheckOutRecord().getCheckOutRecordEntries();
+        if(member != null)
+            return member.getCheckOutRecord().getCheckOutRecordEntries();
+
+        return null;
     }
 
     @SuppressWarnings("unchecked")
