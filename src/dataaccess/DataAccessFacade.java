@@ -66,9 +66,9 @@ public class DataAccessFacade implements DataAccess {
     }
 
     @Override
-    public void addNewBookCopy(BookCopy bookCopy) {
-        Book book = bookCopy.getBook();
-        book.addCopy(bookCopy);
+    public void addNewBookCopy(Book book) {
+        //Book book = bookCopy.getBook();
+        book.addCopy();
 
         HashMap<String, Book> bookMap = readBooksMap();
         String bookIsbn = book.getIsbn();
@@ -116,21 +116,30 @@ public class DataAccessFacade implements DataAccess {
         HashMap<String, Book> books = readBooksMap();
         Book book = books.get(isbn);
 
-        Optional<BookCopy> matchingObject = book.getBookCopies().stream()
-                .filter(BookCopy::getAvailability).findFirst();
+        Optional<BookCopy> matchingObject = null;
+
+        if(book.getBookCopies() != null) {
+            matchingObject = book.getBookCopies().stream()
+                    .filter(BookCopy::getAvailability).findFirst();
+        }
+
+        if(matchingObject == null || matchingObject.isEmpty())
+            return null;
 
         return matchingObject.get();
     }
 
     @Override
-    public void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry) {
+    public void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry, Book book) {
         HashMap<String, LibraryMember> members = readMemberMap();
-        LibraryMember member = members.get(memberId);
-        member.addCheckOutRecordEntry(entry);
+        members.get(memberId).addCheckOutRecordEntry(entry);
 
-        HashMap<String, LibraryMember> memberMap = new HashMap<>();
-        memberMap.put(memberId, member);
-        saveToStorage(StorageType.MEMBERS, memberMap);
+        HashMap<String, Book> books = readBooksMap();
+        String isbn  = book.getIsbn();
+        books.get(isbn).getBookCopies().stream().filter(BookCopy::getAvailability).findFirst().get().setAvailability(false);
+
+        saveToStorage(StorageType.MEMBERS, members);
+        saveToStorage(StorageType.BOOKS, books);
     }
 
     @Override

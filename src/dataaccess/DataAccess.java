@@ -20,7 +20,7 @@ public interface DataAccess {
 
     void addNewBook(Book book);
 
-    void addNewBookCopy(BookCopy bookCopy);
+    void addNewBookCopy(Book book);
 
     Book searchBook(String isbn);
 
@@ -30,7 +30,7 @@ public interface DataAccess {
 
     BookCopy nextAvailableBookCopy(String isbn);
 
-    void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry);
+    void saveMemberCheckoutRecord(String memberId, CheckOutRecordEntry entry, Book book);
 
     List<CheckOutRecordEntry> getCheckOutRecord(String memberId);
 }
