@@ -2,7 +2,6 @@ package ui.library;
 
 import business.*;
 import controller.SystemController;
-import util.ControllerResponse;
 import util.Util;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class UI {
 
     public static void main(String[] args) {
         while (true) {
-            System.out.println(" Please select one of the options ");
+            System.out.println("Please select one of the options");
             if (user == null) {
                 loginUI();
             } else if (user.getRole() == Role.ADMIN) {
@@ -25,19 +24,19 @@ public class UI {
             } else if (user.getRole() == Role.LIBRARIAN) {
                 librarianUI();
             } else {
-                Util.printWhole("     1 - add new library member");
-                Util.printWhole("     2 - add new book");
-                Util.printWhole("     3 - add book copy");
-                Util.printWhole("     4 - check out book");
-                Util.printWhole("     6 - logout");
+                bothUI();
             }
             System.out.println();
         }
     }
 
     public static void loginUI() {
-        Util.printWhole("     1 - login");
-        if (getOption() != 1) return;
+        Util.printWhole("     1 - Login");
+        if (getOption() != 1) {
+            Util.printError(" Please Enter a Valid Selection ");
+            return;
+        }
+        System.out.println();
         Util.printColor("User ID");
         String userId = in.next();
         Util.printColor("Password");
@@ -53,7 +52,7 @@ public class UI {
     private static void librarianUI() {
         Util.printWhole("     1 - Checkout a book for a library member");
         Util.printWhole("     2 - Print checkout records of the library member");
-        Util.printWhole("     3 - logout");
+        Util.printWhole("     3 - Logout");
 
         switch (getOption()) {
             case 1 -> checkoutBook();
@@ -64,10 +63,10 @@ public class UI {
     }
 
     private static void adminUI() {
-        Util.printWhole("     1 - add new library member");
-        Util.printWhole("     2 - add new book");
-        Util.printWhole("     3 - add book copy");
-        Util.printWhole("     4 - logout");
+        Util.printWhole("     1 - Add new library member");
+        Util.printWhole("     2 - Add new book");
+        Util.printWhole("     3 - Add book copy");
+        Util.printWhole("     4 - Logout");
 
         switch (getOption()) {
             case 1 -> addNewLibraryMember();
@@ -78,8 +77,28 @@ public class UI {
         }
     }
 
+    private static void bothUI() {
+        Util.printWhole("     1 - Add new library member");
+        Util.printWhole("     2 - Add new book");
+        Util.printWhole("     3 - Add book copy");
+        Util.printWhole("     4 - Checkout a book for a library member");
+        Util.printWhole("     5 - Print checkout records of the library member");
+        Util.printWhole("     6 - Logout");
+
+        switch (getOption()) {
+            case 1 -> addNewLibraryMember();
+            case 2 -> addNewBook();
+            case 3 -> addBookCopy();
+            case 4 -> checkoutBook();
+            case 5 -> searchCheckOutRecords();
+            case 6 -> logout();
+            default -> Util.printError(" Please Enter a Valid Selection ");
+        }
+    }
+
     //<editor-fold desc ="Admin UI">
     private static void addNewLibraryMember() {
+        System.out.println();
         Util.printColor("Member's First Name");
         String firstName = in.next();
         Util.printColor("Member's Last Name");
@@ -99,12 +118,27 @@ public class UI {
     }
 
     private static void addNewBook() {
+        System.out.println();
         Util.printColor("Book's Title");
         String title = in.next();
         Util.printColor("Book's Isbn");
         String isbn = in.next();
-        Util.printColor("Specify Number of Authors");
-        int authorsNumber = in.nextInt();
+
+        boolean isNotDig = true;
+        int authorsNumber = -1;
+        while (isNotDig) {
+            Util.printColor("Specify Number of Authors");
+            String textEntered = in.next();
+            try {
+                authorsNumber = Integer.parseInt(textEntered);
+                isNotDig = false;
+            } catch (Exception e) {
+                Util.printError(" Please Enter a Valid Number ");
+            }
+            System.out.println();
+        }
+
+
         ArrayList<Author> authors = new ArrayList<>();
         for (int i = 1; i <= authorsNumber; i++) {
             Util.printColor("Author's #" + i + " First Name");
@@ -124,15 +158,30 @@ public class UI {
             Util.printColor("Author's #" + i + " ZipCode");
             String zipCode = in.next();
             authors.add(new Author(firstName, lastName, phoneNumber, new Address(state, street, zipCode, city), shortBio));
+            if (i < authorsNumber)
+                System.out.println();
         }
         Util.printResponse(controller.addBook(title, isbn, authors));
     }
 
     private static void addBookCopy() {
+        System.out.println();
         Util.printColor("Book's Isbn");
         String isbn = in.next();
-        Util.printColor("Copies Number");
-        int copiesNumber = in.nextInt();
+        int copiesNumber = -1;
+        boolean isNotDig = true;
+        while (isNotDig) {
+            Util.printColor("Copies Number");
+            String textEntered = in.next();
+            try {
+                copiesNumber = Integer.parseInt(textEntered);
+                isNotDig = false;
+            } catch (Exception e) {
+                Util.printError(" Please Enter a Valid Number ");
+            }
+            if (!isNotDig)
+                System.out.println();
+        }
         Util.printResponse(controller.addBookCopy(isbn, copiesNumber));
     }
     //</editor-fold>
@@ -150,10 +199,8 @@ public class UI {
         try {
             option = Integer.parseInt(textEntered);
         } catch (Exception e) {
-            Util.printError(" Please Enter a Valid Selection ");
             return -1;
         }
-        System.out.println();
         return option;
     }
     //</editor-fold>
@@ -172,7 +219,7 @@ public class UI {
         String memberId = in.next();
         List<CheckOutRecordEntry> res = controller.searchCheckOutRecords(memberId);
         for (CheckOutRecordEntry item : res) {
-            Util.printWhole("" + item.getDueDate() + item.getBookCopy().getBook().getTitle());
+            Util.printWhole("Book Date: " + item.getDueDate() + " \nBook Title: " + item.getBookCopy().getBook().getTitle() + "\n");
         }
     }
     // </editor-fold>

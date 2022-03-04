@@ -46,6 +46,7 @@ public class SystemController {
 
         if (book != null) {
             BookCopy bookCopy = new BookCopy(copyNum);
+            bookCopy.setBook(book);
             dataAccess.addNewBookCopy(bookCopy);
 
             return new ControllerResponse(true, "Copy added successfully");
