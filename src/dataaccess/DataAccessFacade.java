@@ -141,7 +141,6 @@ public class DataAccessFacade implements DataAccess {
 
     @Override
     public List<CheckOutRecordEntry> getCheckOutRecord(String memberId) {
-
         HashMap<String, LibraryMember> members = readMemberMap();
 
         LibraryMember member = members.get(memberId);

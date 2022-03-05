@@ -8,10 +8,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
+import static util.Util.ANSI_RESET;
+import static util.Util.ANSI_BLUE;
+
 public class UI {
     static Scanner in = new Scanner(System.in);
     static User user = null;
-
     static SystemController controller = SystemController.getInstance();
 
     public static void main(String[] args) {
@@ -115,8 +117,7 @@ public class UI {
         String street = in.next();
         Util.printColor("Member's ZipCode");
         String zipCode = in.next();
-        LibraryMember member = new LibraryMember(memberNumber, firstName, lastName, phoneNumber, new Address(state, street, zipCode, city));
-        Util.printResponse(controller.addNewMember(member));
+        Util.printResponse(controller.addNewMember(memberNumber, firstName, lastName, phoneNumber, state, street, zipCode, city));
     }
 
     private static void addNewBook() {
@@ -125,28 +126,10 @@ public class UI {
         String title = in.next();
         Util.printColor("Book's Isbn");
         String isbn = in.next();
-        Util.printColor("Max Checkout length");
-        int maxCheckoutLength = Integer.parseInt(in.next());
-        Util.printColor("Number of copies");
-        int numCopies = Integer.parseInt(in.next());
-        boolean isNotDig = true;
-        int authorsNumber = -1;
-        while (isNotDig) {
-            Util.printColor("Specify Number of Authors");
-            String textEntered = in.next();
-            try {
-                authorsNumber = Integer.parseInt(textEntered);
-                if (authorsNumber > 0)
-                    isNotDig = false;
-                else
-                    Util.printError(" Please Enter a Valid Number ");
-            } catch (Exception e) {
-                Util.printError(" Please Enter a Valid Number ");
-            }
-            System.out.println();
-        }
+        int maxCheckoutLength = assureInt("Max Checkout length");
+        int numCopies = assureInt("Number of copies");
 
-
+        int authorsNumber = assureInt("Specify Number of Authors");
         ArrayList<Author> authors = new ArrayList<>();
         for (int i = 1; i <= authorsNumber; i++) {
             Util.printColor("Author's #" + i + " First Name");
@@ -169,6 +152,7 @@ public class UI {
             if (i < authorsNumber)
                 System.out.println();
         }
+
         Util.printResponse(controller.addBook(title, isbn, maxCheckoutLength, numCopies, authors));
     }
 
@@ -198,6 +182,26 @@ public class UI {
         }
         return option;
     }
+
+    private static int assureInt(String message) {
+        boolean isNotDig = true;
+        int number = -1;
+        while (isNotDig) {
+            Util.printColor(message);
+            String textEntered = in.next();
+            try {
+                number = Integer.parseInt(textEntered);
+                if (number > 0)
+                    isNotDig = false;
+                else
+                    Util.printError(" Please Enter a Valid Number ");
+            } catch (Exception e) {
+                Util.printError(" Please Enter a Valid Number ");
+            }
+            System.out.println();
+        }
+        return number;
+    }
     //</editor-fold>
 
     //<editor-fold desc ="Librarian UI">
@@ -213,19 +217,23 @@ public class UI {
         Util.printColor("memberId");
         String memberId = in.next();
 
-        if(controller.searchMember(memberId))
-        {
+        if (controller.searchMember(memberId)) {
             List<CheckOutRecordEntry> res = controller.searchCheckOutRecords(memberId);
 
-            if(res != null && res.size() > 0) {
+            if (res != null && res.size() > 0) {
+                String leftAlignFormat = ANSI_BLUE + "|" + ANSI_RESET + " %-17s " + ANSI_BLUE + "|" + ANSI_RESET + " %-17s " + ANSI_BLUE + "|" + ANSI_RESET + " %-17s " + ANSI_BLUE + "|" + ANSI_RESET + " %-17s " + ANSI_BLUE + "|" + ANSI_RESET + "%n";
+
+                System.out.format(ANSI_BLUE + "+" + "-".repeat(19)  + ANSI_BLUE + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+%n" + ANSI_RESET);
+                System.out.format(ANSI_BLUE + "| Book ISBN         | Book Title        | Checkout Date     | Due Date          |%n" + ANSI_RESET);
+                System.out.format(ANSI_BLUE + "+" + "-".repeat(19)  + ANSI_BLUE + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+%n" + ANSI_RESET);
+
                 for (CheckOutRecordEntry item : res) {
-                    Util.printWhole("Book Date: " + item.getDueDate() + " \nBook Title: " + item.getBookCopy().getBook().getTitle() + "\n");
+                    System.out.format(leftAlignFormat, item.getBookCopy().getBook().getIsbn(), item.getBookCopy().getBook().getTitle(), item.getDateofCheckout(), item.getDueDate());
                 }
-            }
-            else
+                System.out.format(ANSI_BLUE + "+" + "-".repeat(19)  + ANSI_BLUE + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+" + "-".repeat(19) + "+%n" + ANSI_RESET);
+            } else
                 Util.printError("No entries found");
-        }
-        else
+        } else
             Util.printError("Member not found");
     }
     // </editor-fold>
